@@ -5,16 +5,13 @@
 package w32
 
 import (
-	// #include <wtypes.h>
-	// #include <winable.h>
-	"C"
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"unicode/utf8"
 
 	//"regexp"
 	"syscall"
-	"unicode/utf8"
 	"unsafe"
 )
 
@@ -1114,13 +1111,22 @@ func ChangeDisplaySettingsEx(szDeviceName *uint16, devMode *DEVMODE, hwnd HWND, 
 	return int32(ret)
 }
 
+type cINPUT struct {
+	_type     DWORD
+	_reserved [40]byte
+
+	//HARDWAREINPUT: DWORD + WORD + WORD = 12
+	//KEYBDINPUT: WORD + WORD + DWORD + DWORD + ULONG_PTR = 40
+	//MOUSEINPUT: LONG + LONG + DWORD + DWORD + DWORD + ULONG_PTR = 32
+}
+
 //Synthesizes keystrokes, mouse motions, and button clicks.
 //see https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
 func SendInput(inputs []INPUT) (err error) {
-	var validInputs []C.INPUT
+	var validInputs []cINPUT
 
 	for _, oneInput := range inputs {
-		input := C.INPUT{_type: C.DWORD(oneInput.Type)}
+		input := cINPUT{_type: DWORD(oneInput.Type)}
 
 		switch oneInput.Type {
 		case INPUT_MOUSE:
@@ -1140,7 +1146,7 @@ func SendInput(inputs []INPUT) (err error) {
 	_, _, err = procSendInput.Call(
 		uintptr(len(validInputs)),
 		uintptr(unsafe.Pointer(&validInputs[0])),
-		uintptr(unsafe.Sizeof(C.INPUT{})),
+		uintptr(unsafe.Sizeof(cINPUT{})),
 	)
 	if !IsErrSuccess(err) {
 		return
