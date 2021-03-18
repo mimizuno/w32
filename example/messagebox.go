@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/JamesHovious/w32"
+	"github.com/mimizuno/w32"
 )
 
 //A simple message box example

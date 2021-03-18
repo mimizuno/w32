@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/JamesHovious/w32"
+
+	"github.com/mimizuno/w32"
 )
 
 //Wait for a hotkey event to occur.

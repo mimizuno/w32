@@ -5,7 +5,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/JamesHovious/w32"
+	"github.com/mimizuno/w32"
 )
 
 // metasploit spawn notepad for x64

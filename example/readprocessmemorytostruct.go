@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/JamesHovious/w32"
 	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/mimizuno/w32"
 )
 
 type Player struct {
